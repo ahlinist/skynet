@@ -11,9 +11,9 @@ def main():
     input_labels = metadata['input_labels']
     output_labels = metadata['output_labels']
 
-    parser = argparse.ArgumentParser(description='Process two integers')
+    parser = argparse.ArgumentParser(description='Process two decimal values')
     for label in input_labels:
-        parser.add_argument(label, type=int, help='coefficient ' + label)
+        parser.add_argument(label, type=float, help='coefficient ' + label)
 
     cli_args = parser.parse_args()
 

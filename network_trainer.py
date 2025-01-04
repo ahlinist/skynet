@@ -17,7 +17,7 @@ def main():
     input_labels = [col for col in header if col.startswith('i')]
     output_labels = [col for col in header if col.startswith('o')]
 
-    layers = [16, len(output_labels)]
+    layers = [16, 8, len(output_labels)]
     activation_function = 'relu'
     network = NeuralNetwork(inputs=len(input_labels), layers=layers, activation_function=activation_function)
 

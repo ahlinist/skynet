@@ -6,20 +6,21 @@ class Perceptron:
     The neuron itself.
     There are several activation functions available along with their derivatives for error calculation.
     """
-    def __init__(self, inputs, activation_function, bias=1.0):
-        # random init
-        self.weights = (np.random.rand(inputs + 1) * 2) - 1
-
-        # Xavier initialization for sigmoid
-        #limit = np.sqrt(6 / (inputs + 1))
-        #self.weights = np.random.uniform(-limit, limit, inputs + 1)
-
-        #He initialization
-        #stddev = np.sqrt( 2 / inputs + 1 )
-        #self.weights = np.random.randn(inputs + 1) * stddev
-
+    def __init__(self, inputs, activation_function, bias, init_function):
+        self.weights = self.__build_initial_weights(init_function, inputs)
         self.bias = bias
         self.activation_function = activation_function
+
+    def __build_initial_weights(self, init_function, inputs):
+        match init_function:
+            case 'random':
+                return (np.random.rand(inputs + 1) * 2) - 1
+            case 'xavier':
+                limit = np.sqrt(6 / (inputs + 1))
+                return np.random.uniform(-limit, limit, inputs + 1)
+            case 'he':
+                stddev = np.sqrt(2 / inputs + 1)
+                return np.random.randn(inputs + 1) * stddev
 
     def run(self, x):
         x_sum = np.dot(np.append(x, self.bias), self.weights)
@@ -35,13 +36,14 @@ class NeuralNetwork:
     @layers is a matrix of integers which represents the network structure.
     @network is a matrix of perceptrons
     """
-    def __init__(self, inputs, layers, activation_function='relu', eta=0.01, bias=1.0):
+    def __init__(self, inputs, layers, activation_function='relu', init_function='random', eta=0.01, bias=1.0):
         self.layers = layers
         self.network = []
         self.values = []
         self.eta = eta
         self.bias = bias
         self.d = []
+        self.init_function = init_function
         match activation_function:
             case 'linear':
                 self.activation_function = NeuralNetwork.LinearActivationFunction()
@@ -64,7 +66,10 @@ class NeuralNetwork:
                     inputs_number = inputs
                 else:
                     inputs_number = self.layers[layer - 1]
-                self.network[layer].append(Perceptron(inputs_number, self.activation_function, self.bias))
+                self.network[layer].append(
+                    Perceptron(inputs=inputs_number, activation_function=self.activation_function,
+                               bias=self.bias, init_function=self.init_function)
+                )
 
     def set_weights(self, weights):
         for layer in range(len(self.layers)):
