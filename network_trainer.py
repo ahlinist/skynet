@@ -3,7 +3,7 @@ import pandas as pd
 from neural_network import NeuralNetwork
 import json
 
-EPOCHS_NUMBER = 5
+EPOCHS_NUMBER = 3
 
 def main():
     with open('dataset.csv', mode='r') as file:
@@ -17,7 +17,7 @@ def main():
     input_labels = [col for col in header if col.startswith('i')]
     output_labels = [col for col in header if col.startswith('o')]
 
-    layers = [4, len(output_labels)]
+    layers = [16, len(output_labels)]
     activation_function = 'relu'
     network = NeuralNetwork(inputs=len(input_labels), layers=layers, activation_function=activation_function)
 
