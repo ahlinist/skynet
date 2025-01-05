@@ -1,9 +1,12 @@
 import csv
+import json
 import pandas as pd
 from neural_network import NeuralNetwork
-import json
+from data_transformer import DataTransformer
 
 EPOCHS_NUMBER = 3
+
+data_transformer = DataTransformer()
 
 def main():
     with open('dataset.csv', mode='r') as file:
@@ -30,8 +33,8 @@ def main():
             for row in reader:
                 row_number += 1
                 mse += network.propagate_back(
-                    normalize_input(row, input_labels, min_values, max_values),
-                    normalize_output(row, input_labels, output_labels, min_values, max_values)
+                    normalize_data(row, 0, input_labels, min_values, max_values),
+                    normalize_data(row, len(input_labels), output_labels, min_values, max_values)
                 ) / row_count
         if epoch % 1 == 0:
             print('Epoch #' + str(epoch) + ' MSE=' + str(mse))
@@ -52,21 +55,11 @@ def main():
 def build_weight_matrix(network):
     return [[perceptron.weights.tolist() for perceptron in layer] for layer in network]
 
-def normalize_input(row, input_labels, mins, maxes):
-    result = []
-    for i, label in enumerate(input_labels):
-        min_value = mins[label]
-        max_value = maxes[label]
-        result.append((float(row[i]) - min_value) / (max_value - min_value))
-    return result
-
-def normalize_output(row, input_labels, output_labels, mins, maxes):
-    result = []
-    for i, label in enumerate(output_labels, len(input_labels)):
-        min_value = mins[label]
-        max_value = maxes[label]
-        result.append((float(row[i]) - min_value) / (max_value - min_value))
-    return result
+def normalize_data(row, start_from_index, labels, mins, maxes):
+    return [
+        data_transformer.normalize(float(row[i]), mins[label], maxes[label])
+        for i, label in enumerate(labels, start_from_index)
+    ]
 
 if __name__ == '__main__':
     main()
