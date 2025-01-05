@@ -4,27 +4,16 @@ import numpy as np
 class Perceptron:
     """
     The neuron itself.
-    There are several activation functions available along with their derivatives for error calculation.
+    Accepts activation_function, bias value and np.array of weights as parameters.
     """
-    def __init__(self, inputs, activation_function, bias, init_function):
-        self.weights = self.__build_initial_weights(init_function, inputs)
+    def __init__(self, activation_function, bias, weights):
+        self.weights = weights
         self.bias = bias
         self.activation_function = activation_function
 
-    def __build_initial_weights(self, init_function, inputs):
-        match init_function:
-            case 'random':
-                return (np.random.rand(inputs + 1) * 2) - 1
-            case 'xavier':
-                limit = np.sqrt(6 / (inputs + 1))
-                return np.random.uniform(-limit, limit, inputs + 1)
-            case 'he':
-                stddev = np.sqrt(2 / inputs + 1)
-                return np.random.randn(inputs + 1) * stddev
-
     def run(self, x):
-        x_sum = np.dot(np.append(x, self.bias), self.weights)
-        return self.activation_function.map(x_sum)
+        input_values_sum = np.dot(np.append(x, self.bias), self.weights)
+        return self.activation_function.map(input_values_sum)
 
     def set_weights(self, weights):
         self.weights = np.array(weights, dtype=float)
@@ -36,23 +25,14 @@ class NeuralNetwork:
     @layers is a matrix of integers which represents the network structure.
     @network is a matrix of perceptrons
     """
-    def __init__(self, inputs, layers, activation_function='relu', init_function='random', eta=0.01, bias=1.0):
+    def __init__(self, network_inputs, layers, activation_function_name='relu', init_function_name='random', eta=0.01, bias=1.0):
         self.layers = layers
         self.network = []
         self.values = []
         self.eta = eta
         self.bias = bias
         self.d = []
-        self.init_function = init_function
-        match activation_function:
-            case 'linear':
-                self.activation_function = NeuralNetwork.LinearActivationFunction()
-            case 'sigmoid':
-                self.activation_function = NeuralNetwork.SigmoidActivationFunction()
-            case 'relu':
-                self.activation_function = NeuralNetwork.ReLUActivationFunction()
-            case 'tanh':
-                self.activation_function = NeuralNetwork.TanhActivationFunction()
+        self.activation_function = self.__build_activation_function(activation_function_name)
 
         for layer in range(len(self.layers)):
             self.values.append([])
@@ -63,13 +43,38 @@ class NeuralNetwork:
 
             for neuron in range(self.layers[layer]):
                 if layer == 0:
-                    inputs_number = inputs
+                    inputs_number = network_inputs
                 else:
                     inputs_number = self.layers[layer - 1]
                 self.network[layer].append(
-                    Perceptron(inputs=inputs_number, activation_function=self.activation_function,
-                               bias=self.bias, init_function=self.init_function)
+                    Perceptron(
+                        bias=self.bias,
+                        activation_function=self.activation_function,
+                        weights=self.__build_initial_weights(init_function_name, inputs_number)
+                    )
                 )
+
+    def __build_activation_function(self, activation_function_name):
+        match activation_function_name:
+            case 'linear':
+                return NeuralNetwork.LinearActivationFunction()
+            case 'sigmoid':
+                return NeuralNetwork.SigmoidActivationFunction()
+            case 'relu':
+                return NeuralNetwork.ReLUActivationFunction()
+            case 'tanh':
+                return NeuralNetwork.TanhActivationFunction()
+
+    def __build_initial_weights(self, init_function, inputs_number):
+        match init_function:
+            case 'random':
+                return (np.random.rand(inputs_number + 1) * 2) - 1
+            case 'xavier':
+                limit = np.sqrt(6 / (inputs_number + 1))
+                return np.random.uniform(-limit, limit, inputs_number + 1)
+            case 'he':
+                stddev = np.sqrt(2 / inputs_number + 1)
+                return np.random.randn(inputs_number + 1) * stddev
 
     def set_weights(self, weights):
         for layer in range(len(self.layers)):

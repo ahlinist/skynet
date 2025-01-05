@@ -2,7 +2,7 @@ import random
 import math
 import csv
 
-DATASET_SIZE = 10000
+DATASET_SIZE = 1000
 MIN_TIME = 0 #s
 MAX_TIME = 1000 #s
 

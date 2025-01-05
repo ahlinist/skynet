@@ -18,8 +18,8 @@ def main():
     output_labels = [col for col in header if col.startswith('o')]
 
     layers = [16, 8, len(output_labels)]
-    activation_function = 'relu'
-    network = NeuralNetwork(inputs=len(input_labels), layers=layers, activation_function=activation_function)
+    activation_function_name = 'relu'
+    network = NeuralNetwork(network_inputs=len(input_labels), layers=layers, activation_function_name=activation_function_name)
 
     for epoch in range(EPOCHS_NUMBER):
         mse = 0.0
@@ -41,7 +41,7 @@ def main():
     data = {
         "metadata": {
             "input_labels": input_labels, "output_labels": output_labels,"layers": layers,
-            "activation_function": activation_function, "min_values": min_values.to_dict(),
+            "activation_function": activation_function_name, "min_values": min_values.to_dict(),
             "max_values": max_values.to_dict()}, "weights": build_weight_matrix(network.network),
     }
 

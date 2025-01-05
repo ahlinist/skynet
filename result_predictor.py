@@ -20,10 +20,10 @@ def main():
     min_values = metadata['min_values']
     max_values = metadata['max_values']
     layers = metadata['layers']
-    activation_function = metadata['activation_function']
+    activation_function_name = metadata['activation_function']
     weights = data['weights']
 
-    network = NeuralNetwork(inputs=len(input_labels), layers=layers, activation_function=activation_function)
+    network = NeuralNetwork(network_inputs=len(input_labels), layers=layers, activation_function_name=activation_function_name)
 
     for i, layer in enumerate(network.network):
         for j, perceptron in enumerate(layer):
