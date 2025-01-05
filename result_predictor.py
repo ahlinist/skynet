@@ -1,9 +1,11 @@
 import json
 import argparse
 from neural_network import NeuralNetwork
+from data_transformer import DataTransformer
 
 
 def main():
+    data_transformer = DataTransformer()
     with open('network.json', 'r') as file:
         data = json.load(file)
 
@@ -31,26 +33,22 @@ def main():
 
     normalized_inputs = []
 
-    for input_label in input_labels:
+    for label in input_labels:
+        value = getattr(cli_args, label)
+        min = min_values[label]
+        max = max_values[label]
         normalized_inputs.append(
-            normalize(getattr(cli_args, input_label), input_label, min_values, max_values)
+            data_transformer.normalize(value, min, max)
         )
 
     print('Result:')
-    roots = network.run(normalized_inputs)
+    outputs = network.run(normalized_inputs)
 
-    for i, output_label in enumerate(output_labels):
-        print(denormalize(roots[i], output_label, min_values, max_values))
-
-def normalize(value, label, mins, maxes):
-    min_value = mins[label]
-    max_value = maxes[label]
-    return (value - min_value)/(max_value - min_value)
-
-def denormalize(value, label, mins, maxes):
-    min_value = mins[label]
-    max_value = maxes[label]
-    return (value * (max_value - min_value)) + min_value
+    for i, label in enumerate(output_labels):
+        value = outputs[i]
+        min = min_values[label]
+        max = max_values[label]
+        print(data_transformer.denormalize(value, min, max))
 
 if __name__ == '__main__':
     main()
