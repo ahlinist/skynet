@@ -86,7 +86,7 @@ class NeuralNetwork:
         print()
         for i in range(len(self.layers)):
             for j in range(self.layers[i]):
-                print('Layer: ', i + 1, ", Neuron: ", j + 1, ", Weight: ", self.network[i][j].weights)
+                print(f'Layer: {i + 1}, Neuron: {j + 1}, Weight: {self.network[i][j].weights}')
         print()
 
     def run(self, x):
