@@ -33,10 +33,7 @@ class ResultPredictor:
             bias=bias
         )
 
-        #TODO: hide it inside the network
-        for i, layer in enumerate(network.network):
-            for j, perceptron in enumerate(layer):
-                perceptron.weights = weights[i][j]
+        network.set_weights(weights)
 
         normalized_inputs = [
             self.data_transformer.normalize(float(arguments_dict[label]), min_values[label], max_values[label])

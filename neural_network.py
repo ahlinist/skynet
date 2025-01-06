@@ -16,7 +16,7 @@ class Perceptron:
         return self.activation_function.map(input_values_sum)
 
     def set_weights(self, weights):
-        self.weights = np.array(weights, dtype=float)
+        self.weights = weights
 
 
 class NeuralNetwork:
@@ -34,6 +34,7 @@ class NeuralNetwork:
         self.d = []
         self.activation_function = self.__build_activation_function(activation_function)
 
+        #TODO: move it to a separate init() method
         for layer in range(len(self.layers)):
             self.values.append([])
             self.network.append([])
