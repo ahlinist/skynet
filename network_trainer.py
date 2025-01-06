@@ -9,6 +9,7 @@ class NetworkTrainer:
         self.data_transformer = data_transformer
 
     def train(self, epochs_number):
+        #TODO: to move file operations to a separate class
         with open('dataset.csv', mode='r') as file:
             df = pd.read_csv(file)
 
