@@ -8,6 +8,8 @@ python network_trainer.py
 python skynet.py predict <value1> <value2>  
 ```
 
+don't forget to populate config.json  
+
 ## example
 
 ```

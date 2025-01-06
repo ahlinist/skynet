@@ -1,0 +1,7 @@
+{
+  "activation_function": "relu",
+  "bias": 1.0,
+  "input_file_path": "dataset.csv",
+  "init_function": "random",
+  "learning_rate": 0.01
+}
