@@ -1,12 +1,12 @@
 import csv
-import json
 import pandas as pd
 from neural_network import NeuralNetwork
 
 
 class NetworkTrainer:
-    def __init__(self, data_transformer):
+    def __init__(self, data_transformer, file_handler):
         self.data_transformer = data_transformer
+        self.file_handler = file_handler
 
     def train(self, epochs_number):
         #TODO: to move file operations to a separate class
@@ -36,8 +36,8 @@ class NetworkTrainer:
                 for row in reader:
                     row_number += 1
                     mse += network.propagate_back(
-                        self.normalize_data(row, 0, input_labels, min_values, max_values),
-                        self.normalize_data(row, len(input_labels), output_labels, min_values, max_values)
+                        self.__normalize_data(row, 0, input_labels, min_values, max_values),
+                        self.__normalize_data(row, len(input_labels), output_labels, min_values, max_values)
                     ) / row_count
             if epoch % 1 == 0:
                 print('Epoch #' + str(epoch) + ' MSE=' + str(mse))
@@ -48,17 +48,15 @@ class NetworkTrainer:
             "metadata": {
                 "input_labels": input_labels, "output_labels": output_labels,"layers": layers,
                 "activation_function": activation_function_name, "min_values": min_values.to_dict(),
-                "max_values": max_values.to_dict()}, "weights": self.build_weight_matrix(network.network),
+                "max_values": max_values.to_dict()}, "weights": self.__build_weight_matrix(network.network),
         }
 
-        # Write the dictionary to a JSON file
-        with open('network.json', 'w') as outfile:
-            json.dump(data, outfile, indent=4)
+        self.file_handler.write_json('network.json', data)
 
-    def build_weight_matrix(self, network):
+    def __build_weight_matrix(self, network):
         return [[perceptron.weights.tolist() for perceptron in layer] for layer in network]
 
-    def normalize_data(self, row, start_from_index, labels, mins, maxes):
+    def __normalize_data(self, row, start_from_index, labels, mins, maxes):
         return [
             self.data_transformer.normalize(float(row[i]), mins[label], maxes[label])
             for i, label in enumerate(labels, start_from_index)

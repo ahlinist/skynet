@@ -1,14 +1,13 @@
-import json
 from neural_network import NeuralNetwork
 
 
 class ResultPredictor:
-    def __init__(self, data_transformer):
+    def __init__(self, data_transformer, file_handler):
         self.data_transformer = data_transformer
+        self.file_handler = file_handler
 
     def predict(self, arguments):
-        with open('network.json', 'r') as file:
-            data = json.load(file)
+        data = self.file_handler.read_json('network.json')
 
         metadata = data['metadata']
         input_labels = metadata['input_labels']
