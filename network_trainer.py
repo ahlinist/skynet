@@ -7,14 +7,24 @@ class NetworkTrainer:
         self.file_handler = file_handler
 
     def train(self, epochs_number):
-        # TODO: read params like that from config file
-        activation_function_name = 'relu'
-        input_file_path = "dataset.csv"
+        config = self.file_handler.read_json("config.json")
+        activation_function = config["activation_function"]
+        input_file_path = config["input_file_path"]
+        learning_rate = config["learning_rate"]
+        init_function = config["init_function"]
+        bias = config["bias"]
         row_count, input_labels, output_labels, min_values, max_values = self.file_handler.read_csv_metadata(input_file_path)
 
         layers = [16, 8, len(output_labels)]
 
-        network = NeuralNetwork(network_inputs=len(input_labels), layers=layers, activation_function_name=activation_function_name)
+        network = NeuralNetwork(
+            network_inputs=len(input_labels),
+            layers=layers,
+            activation_function=activation_function,
+            init_function=init_function,
+            learning_rate=learning_rate,
+            bias=bias
+        )
 
         for epoch in range(epochs_number):
             mse = 0.0
@@ -32,8 +42,8 @@ class NetworkTrainer:
 
         data = {
             "metadata": {
-                "input_labels": input_labels, "output_labels": output_labels,"layers": layers,
-                "activation_function": activation_function_name, "min_values": min_values.to_dict(),
+                "input_labels": input_labels, "output_labels": output_labels,"layers": layers, "bias": bias,
+                "activation_function": activation_function, "min_values": min_values.to_dict(),
                 "max_values": max_values.to_dict()}, "weights": self.__build_weight_matrix(network.network),
         }
 

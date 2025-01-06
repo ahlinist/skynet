@@ -25,14 +25,14 @@ class NeuralNetwork:
     @layers is a matrix of integers which represents the network structure.
     @network is a matrix of perceptrons
     """
-    def __init__(self, network_inputs, layers, activation_function_name='relu', init_function_name='random', eta=0.01, bias=1.0):
+    def __init__(self, network_inputs, layers, activation_function, bias, init_function=None, learning_rate=None):
         self.layers = layers
         self.network = []
         self.values = []
-        self.eta = eta
+        self.learning_rate = learning_rate
         self.bias = bias
         self.d = []
-        self.activation_function = self.__build_activation_function(activation_function_name)
+        self.activation_function = self.__build_activation_function(activation_function)
 
         for layer in range(len(self.layers)):
             self.values.append([])
@@ -50,12 +50,12 @@ class NeuralNetwork:
                     Perceptron(
                         bias=self.bias,
                         activation_function=self.activation_function,
-                        weights=self.__build_initial_weights(init_function_name, inputs_number)
+                        weights=self.__build_initial_weights(init_function, inputs_number)
                     )
                 )
 
-    def __build_activation_function(self, activation_function_name):
-        match activation_function_name:
+    def __build_activation_function(self, activation_function):
+        match activation_function:
             case 'linear':
                 return NeuralNetwork.LinearActivationFunction()
             case 'sigmoid':
@@ -120,7 +120,7 @@ class NeuralNetwork:
         for layer_index in range(len(self.network)):
             for neuron_index in range(len(self.network[layer_index])):
                 input_vector = x if (layer_index == 0) else self.values[layer_index - 1]
-                correction = self.eta * self.d[layer_index][neuron_index] * np.append(input_vector, self.bias)
+                correction = self.learning_rate * self.d[layer_index][neuron_index] * np.append(input_vector, self.bias)
                 self.network[layer_index][neuron_index].weights += correction
         return mse
 
