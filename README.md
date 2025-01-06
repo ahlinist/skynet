@@ -5,13 +5,13 @@
 ```
 python data_generator.py
 python network_trainer.py
-python result_predictor.py <b> <c> 
+python skynet.py predict <value1> <value2>  
 ```
 
 ## example
 
 ```
-python result_predictor.py 3 1
+python skynet.py predict 1  
 ```
 
 ## required libs
