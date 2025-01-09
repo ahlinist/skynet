@@ -1,7 +1,9 @@
 {
-  "activation_function": "relu",
+  "activation_function": "tanh",
   "bias": 1.0,
   "input_file_path": "dataset.csv",
   "init_function": "random",
-  "learning_rate": 0.01
+  "learning_rate": 0.01,
+  "hidden_layers": [8, 8],
+  "epochs_number": 3
 }

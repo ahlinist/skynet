@@ -14,8 +14,8 @@ class ResultPredictor:
         output_labels = metadata['output_labels']
 
         if len(arguments) != len(input_labels):
-            #TODO: specify in the message how many params are in the dataset and in the args
-            raise Exception("Number of input arguments doesn't correspond the number of model inputs")
+            raise Exception(f"Number of input arguments ({len(arguments) }) doesn't correspond the number of model "
+                            f"inputs ({len(input_labels)})")
 
         arguments_dict = {label: arguments[index] for index, label in enumerate(input_labels)}
 

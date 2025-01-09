@@ -4,7 +4,6 @@ from network_trainer import NetworkTrainer
 from data_transformer import DataTransformer
 from file_handler import FileHandler
 
-EPOCHS_NUMBER = 3
 
 def main():
     data_transformer = DataTransformer()
@@ -19,7 +18,7 @@ def main():
 
     match args.action:
         case 'train':
-            network_trainer.train(EPOCHS_NUMBER)
+            network_trainer.train()
         case 'predict':
             result_predictor.predict(args.other_args)
 

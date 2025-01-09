@@ -6,16 +6,19 @@ class NetworkTrainer:
         self.data_transformer = data_transformer
         self.file_handler = file_handler
 
-    def train(self, epochs_number):
+    def train(self):
         config = self.file_handler.read_json("config.json")
         activation_function = config["activation_function"]
         input_file_path = config["input_file_path"]
         learning_rate = config["learning_rate"]
         init_function = config["init_function"]
         bias = config["bias"]
+        hidden_layers = config["hidden_layers"]
+        epochs_number = config["epochs_number"]
+
         row_count, input_labels, output_labels, min_values, max_values = self.file_handler.read_csv_metadata(input_file_path)
 
-        layers = [16, 8, len(output_labels)]
+        layers = [len(input_labels), *hidden_layers, len(output_labels)]
 
         network = NeuralNetwork(
             network_inputs=len(input_labels),
