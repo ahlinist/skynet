@@ -43,5 +43,10 @@ class ResultPredictor:
         print('Result:')
         outputs = network.run(normalized_inputs)
 
+        result = []
         for i, label in enumerate(output_labels):
-            print(label + ": " + str(self.data_transformer.denormalize(outputs[i], min_values[label], max_values[label])))
+            value = self.data_transformer.denormalize(outputs[i], min_values[label], max_values[label])
+            result.append(value)
+            print(label + ": " + str(value))
+
+        return result

@@ -5,5 +5,5 @@
   "init_function": "random",
   "learning_rate": 0.01,
   "hidden_layers": [8, 8],
-  "epochs_number": 3
+  "epochs_number": 1
 }

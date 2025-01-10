@@ -1,4 +1,4 @@
 .idea
 __pycache__
-dataset.csv
+dataset*.csv
 network.json

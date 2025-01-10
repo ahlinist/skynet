@@ -3,7 +3,7 @@ import math
 import csv
 import numpy as np
 
-DATASET_SIZE = 700000
+DATASET_SIZE = 1000000
 
 MIN_TIME = 400000000000 #s
 MAX_TIME = 7000000000000 #s
@@ -15,14 +15,17 @@ ECCENTRICITY = math.sqrt(1 - SEMIMINOR_AXIS ** 2 / SEMIMAJOR_AXIS ** 2)
 PERIOD = 10000000000000
 
 def main():
-    with open(r'dataset.csv', 'w', newline='') as csvfile:
+    with open(r'dataset_aux.csv', 'w', newline='') as csvfile:
         csvfile.truncate()
         fieldnames = ['i1', 'o1', 'o2']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writerow({'i1': 'i1', 'o1': 'o1', 'o2': 'o2'})
 
-    for i in range(DATASET_SIZE):
-        time = MIN_TIME + random.uniform(0, 1) * (MAX_TIME - MIN_TIME)
+    for i in range(100):
+        time = i * PERIOD / 100
+
+        if time > MIN_TIME and time < MAX_TIME:
+            continue
 
         M = calculate_mean_anomaly(time)
         E = calculate_eccentric_anomaly(M, ECCENTRICITY)
@@ -31,7 +34,7 @@ def main():
         x = SEMIMINOR_AXIS * math.cos(theta)
         y = SEMIMAJOR_AXIS * math.sin(theta)
 
-        with open(r'dataset.csv', 'a', newline='') as csvfile:
+        with open(r'dataset_aux.csv', 'a', newline='') as csvfile:
             fieldnames = ['i1', 'o1', 'o2']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow({'i1': time, 'o1': x, 'o2': y})
